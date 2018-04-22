@@ -1,5 +1,5 @@
 {
-  "name": "tw-housekeeping",
+  "name": "cleanr",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -24,14 +24,7 @@
       "^.+\\.tsx?$": "ts-jest"
     },
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ],
+    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
     "testEnvironment": "node"
   },
   "dependencies": {
