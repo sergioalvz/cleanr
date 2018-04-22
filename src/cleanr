@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+
+const program = require("commander");
+const { config } = require("dotenv");
+
+config();
+
+program
+  .name("cleanr")
+  .version("1.0.0")
+  .command("twitter", "set of commands to work with Twitter");
+
+program.parse(process.argv);

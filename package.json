@@ -11,20 +11,19 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@types/dotenv": "^4.0.3",
-    "@types/jest": "^22.2.3",
-    "jest": "^22.4.3",
-    "ts-jest": "^22.4.2",
-    "ts-node": "^6.0.0",
-    "typescript": "^2.8.1"
+    "jest": "^22.4.3"
   },
   "private": true,
   "jest": {
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
     "testEnvironment": "node"
   },
   "dependencies": {

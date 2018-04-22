@@ -1,0 +1,46 @@
+#!/usr/bin/env node
+
+const program = require("commander");
+const Twitter = require("twitter-lite");
+
+const {
+  TWITTER_CONSUMER_KEY,
+  TWITTER_CONSUMER_SECRET,
+  TWITTER_ACCESS_TOKEN,
+  TWITTER_ACCESS_TOKEN_SECRET
+} = process.env;
+
+function buildTwitter({
+  consumerKey = TWITTER_CONSUMER_KEY,
+  consumerSecret = TWITTER_CONSUMER_SECRET,
+  accessToken = TWITTER_ACCESS_TOKEN,
+  accessTokenSecret = TWITTER_ACCESS_TOKEN_SECRET
+}) {
+  return new Twitter({
+    consumer_key: consumerKey,
+    consumer_secret: consumerSecret,
+    access_token_key: accessToken,
+    access_token_secret: accessTokenSecret
+  });
+}
+
+async function verify({ accessToken, accessTokenSecret }) {
+  const twitter = buildTwitter({ accessToken, accessTokenSecret });
+
+  const response = await twitter.get("account/verify_credentials");
+
+  if (response.errors) {
+    console.error(response.errors);
+
+    process.exit(1);
+  }
+}
+
+program
+  .command("verify")
+  .description("verifies that everything's okay")
+  .option("-t, --access-token [token]", "user's access token")
+  .option("-s, --access-token-secret [secret]", "user's access token secret")
+  .action(verify);
+
+program.parse(process.argv);
