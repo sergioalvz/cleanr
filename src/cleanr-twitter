@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 const program = require("commander");
+const csv = require("csv");
+const { createReadStream } = require("fs");
 const Twitter = require("twitter-lite");
 
 const {
@@ -24,6 +26,25 @@ function buildTwitter({
   });
 }
 
+async function count({ file }) {
+  function parse() {
+    return new Promise((resolve, reject) => {
+      let numberOfRecords = 0;
+
+      const parser = csv.parse({ delimiter: "," });
+
+      createReadStream(file)
+        .pipe(parser)
+        .on("data", () => numberOfRecords++)
+        .on("end", () => resolve(numberOfRecords));
+    });
+  }
+
+  const numberOfTweets = await parse();
+
+  console.log(numberOfTweets - 1);
+}
+
 async function verify({ accessToken, accessTokenSecret }) {
   const twitter = buildTwitter({ accessToken, accessTokenSecret });
 
@@ -42,5 +63,11 @@ program
   .option("-t, --access-token [token]", "user's access token")
   .option("-s, --access-token-secret [secret]", "user's access token secret")
   .action(verify);
+
+program
+  .command("count")
+  .description("counts the number of tweets")
+  .option("-f, --file [path]", "path to back-up file")
+  .action(count);
 
 program.parse(process.argv);

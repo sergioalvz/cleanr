@@ -67,5 +67,16 @@ describe.only("cleanr", () => {
         }
       });
     });
+
+    describe("count", () => {
+      it("returns the number of tweets", async () => {
+        expect.assertions(1);
+
+        const csv = join(__dirname, "../fixtures/tweets.csv");
+        const stdout = await exec("twitter", "count", `--file=${csv}`);
+
+        expect(stdout.trim()).toEqual("9");
+      });
+    });
   });
 });
