@@ -28,7 +28,7 @@ function buildTwitter({
 
 async function count({ file }) {
   function parse() {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       let numberOfRecords = 0;
 
       const parser = csv.parse({ delimiter: "," });
@@ -47,7 +47,7 @@ async function count({ file }) {
 
 async function select({ file }) {
   function parse() {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       const rows = [];
 
       createReadStream(file)
