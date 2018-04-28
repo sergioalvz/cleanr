@@ -10,4 +10,12 @@ program
   .version("1.0.0")
   .command("twitter", "set of commands to work with Twitter");
 
+program.on("command:*", () => {
+  const exists = program.commands.find(
+    command => command._name === program.args[0]
+  );
+
+  if (!exists) program.help();
+});
+
 program.parse(process.argv);
