@@ -78,5 +78,28 @@ describe.only("cleanr", () => {
         expect(stdout.trim()).toEqual("9");
       });
     });
+
+    describe("select", () => {
+      it("returns the whole list of identifiers if there is no criteria", async () => {
+        expect.assertions(1);
+
+        const csv = join(__dirname, "../fixtures/tweets.csv");
+        const stdout = await exec("twitter", "select", `--file=${csv}`);
+
+        const expected = [
+          "983243866684973057",
+          "981775211329662976",
+          "981630168354705413",
+          "981546684835606528",
+          "980707155002130432",
+          "980459529396727810",
+          "979814031212064770",
+          "979462972547457024",
+          "979372356769546240"
+        ].join("\n");
+
+        expect(stdout.trim()).toEqual(expected);
+      });
+    });
   });
 });

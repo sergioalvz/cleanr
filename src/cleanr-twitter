@@ -45,6 +45,27 @@ async function count({ file }) {
   console.log(numberOfTweets - 1);
 }
 
+async function select({ file }) {
+  function parse() {
+    return new Promise((resolve, reject) => {
+      const rows = [];
+
+      createReadStream(file)
+        .pipe(csv.parse({ delimiter: "," }))
+        .on("data", row => rows.push(row))
+        .on("end", () => resolve(rows));
+    });
+  }
+
+  const rows = await parse();
+  const identifiers = rows
+    .slice(1)
+    .map(row => row[0])
+    .join("\n");
+
+  console.log(identifiers);
+}
+
 async function verify({ accessToken, accessTokenSecret }) {
   const twitter = buildTwitter({ accessToken, accessTokenSecret });
 
@@ -69,5 +90,11 @@ program
   .description("counts the number of tweets")
   .option("-f, --file [path]", "path to back-up file")
   .action(count);
+
+program
+  .command("select")
+  .description("returns identifiers with matching criteria")
+  .option("-f, --file [path]", "path to back-up file")
+  .action(select);
 
 program.parse(process.argv);
