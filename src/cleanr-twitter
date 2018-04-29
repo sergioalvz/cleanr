@@ -3,6 +3,7 @@
 const program = require("commander");
 
 const Count = require("./commands/Count");
+const Remove = require("./commands/Remove");
 const Select = require("./commands/Select");
 const Verify = require("./commands/Verify");
 
@@ -11,6 +12,18 @@ async function count({ file }) {
   const count = await command.perform();
 
   console.log(count);
+}
+
+async function remove(listOfIds) {
+  const command = new Remove();
+
+  try {
+    await command.perform({ listOfIds });
+  } catch (error) {
+    console.error(JSON.stringify(error));
+
+    process.exit(1);
+  }
 }
 
 async function select({ file, until }) {
@@ -39,6 +52,12 @@ program
   .description("counts the number of tweets")
   .option("-f, --file [path]", "path to back-up file")
   .action(count);
+
+program
+  .command("remove [ids...]")
+  .alias("rm")
+  .description("removes the injected list of IDs")
+  .action(remove);
 
 program
   .command("select")

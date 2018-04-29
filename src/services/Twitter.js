@@ -8,18 +8,31 @@ const {
 } = process.env;
 
 module.exports = class Twitter {
-  constructor({
-    consumerKey = TWITTER_CONSUMER_KEY,
-    consumerSecret = TWITTER_CONSUMER_SECRET,
-    accessToken = TWITTER_ACCESS_TOKEN,
-    accessTokenSecret = TWITTER_ACCESS_TOKEN_SECRET
-  }) {
-    this._client = new TwitterClient({
-      consumer_key: consumerKey,
-      consumer_secret: consumerSecret,
-      access_token_key: accessToken,
-      access_token_secret: accessTokenSecret
-    });
+  constructor(
+    {
+      consumerKey = TWITTER_CONSUMER_KEY,
+      consumerSecret = TWITTER_CONSUMER_SECRET,
+      accessToken = TWITTER_ACCESS_TOKEN,
+      accessTokenSecret = TWITTER_ACCESS_TOKEN_SECRET
+    } = {},
+    { client } = {}
+  ) {
+    this._client =
+      client ||
+      new TwitterClient({
+        consumer_key: consumerKey,
+        consumer_secret: consumerSecret,
+        access_token_key: accessToken,
+        access_token_secret: accessTokenSecret
+      });
+  }
+
+  async removeTweet(id) {
+    const response = await this._client.post(`statuses/destroy/${id}`);
+
+    if (response.errors) {
+      throw response.errors;
+    }
   }
 
   async verify() {
