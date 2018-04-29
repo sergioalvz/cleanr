@@ -15,7 +15,7 @@ function exec(...params) {
   });
 }
 
-describe.only("cleanr", () => {
+describe("cleanr", () => {
   it("works", async () => {
     expect.assertions(1);
 
