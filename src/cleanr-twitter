@@ -1,58 +1,34 @@
 #!/usr/bin/env node
 
 const program = require("commander");
-const moment = require("moment");
-const Twitter = require("twitter-lite");
 
-const Until = require("./specifications/Until");
-const TwitterCsvFileParser = require("./services/TwitterCsvFileParser");
-
-const {
-  TWITTER_CONSUMER_KEY,
-  TWITTER_CONSUMER_SECRET,
-  TWITTER_ACCESS_TOKEN,
-  TWITTER_ACCESS_TOKEN_SECRET
-} = process.env;
-
-function buildTwitter({
-  consumerKey = TWITTER_CONSUMER_KEY,
-  consumerSecret = TWITTER_CONSUMER_SECRET,
-  accessToken = TWITTER_ACCESS_TOKEN,
-  accessTokenSecret = TWITTER_ACCESS_TOKEN_SECRET
-}) {
-  return new Twitter({
-    consumer_key: consumerKey,
-    consumer_secret: consumerSecret,
-    access_token_key: accessToken,
-    access_token_secret: accessTokenSecret
-  });
-}
+const Count = require("./commands/Count");
+const Select = require("./commands/Select");
+const Verify = require("./commands/Verify");
 
 async function count({ file }) {
-  const parser = new TwitterCsvFileParser({ file });
-  const tweets = await parser.perform();
+  const command = new Count({ file });
+  const count = await command.perform();
 
-  console.log(tweets.length);
+  console.log(count);
 }
 
 async function select({ file, until }) {
-  const parser = new TwitterCsvFileParser({ file });
-  const tweets = await parser.perform({
-    query: new Until({ date: moment(until) })
-  });
+  const command = new Select({ file });
+  const tweets = await command.perform({ until });
 
-  const identifiers = tweets.map(tweet => tweet.id).join("\n");
+  const output = tweets.map(tweet => tweet.id).join("\n");
 
-  console.log(identifiers);
+  console.log(output);
 }
 
 async function verify({ accessToken, accessTokenSecret }) {
-  const twitter = buildTwitter({ accessToken, accessTokenSecret });
+  const command = new Verify({ accessToken, accessTokenSecret });
 
-  const response = await twitter.get("account/verify_credentials");
-
-  if (response.errors) {
-    console.error(response.errors);
+  try {
+    await command.perform();
+  } catch (error) {
+    console.error(error);
 
     process.exit(1);
   }
