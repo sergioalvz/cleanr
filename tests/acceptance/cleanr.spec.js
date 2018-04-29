@@ -100,6 +100,26 @@ describe.only("cleanr", () => {
 
         expect(stdout.trim()).toEqual(expected);
       });
+
+      it("returns the list of identifiers until the specified date", async () => {
+        expect.assertions(1);
+
+        const csv = join(__dirname, "../fixtures/tweets.csv");
+        const stdout = await exec(
+          "twitter",
+          "select",
+          `--file=${csv}`,
+          "--until=2018-04-01"
+        );
+
+        const expected = [
+          "979814031212064770",
+          "979462972547457024",
+          "979372356769546240"
+        ].join("\n");
+
+        expect(stdout.trim()).toEqual(expected);
+      });
     });
   });
 });

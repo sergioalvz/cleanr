@@ -3,6 +3,7 @@
 const program = require("commander");
 const csv = require("csv");
 const { createReadStream } = require("fs");
+const moment = require("moment");
 const Twitter = require("twitter-lite");
 
 const {
@@ -45,23 +46,31 @@ async function count({ file }) {
   console.log(numberOfTweets - 1);
 }
 
-async function select({ file }) {
+async function select({ until = moment.utc(), file }) {
   function parse() {
     return new Promise(resolve => {
+      let counter = 0;
       const rows = [];
 
       createReadStream(file)
         .pipe(csv.parse({ delimiter: "," }))
-        .on("data", row => rows.push(row))
+        .on("data", row => {
+          if (counter > 0) {
+            const timestamp = moment(row[3], "YYYY-MM-DD HH:mm:ss +0000");
+
+            if (timestamp.isBefore(until)) {
+              rows.push(row);
+            }
+          }
+
+          counter++;
+        })
         .on("end", () => resolve(rows));
     });
   }
 
   const rows = await parse();
-  const identifiers = rows
-    .slice(1)
-    .map(row => row[0])
-    .join("\n");
+  const identifiers = rows.map(row => row[0]).join("\n");
 
   console.log(identifiers);
 }
@@ -79,13 +88,6 @@ async function verify({ accessToken, accessTokenSecret }) {
 }
 
 program
-  .command("verify")
-  .description("verifies that everything's okay")
-  .option("-t, --access-token [token]", "user's access token")
-  .option("-s, --access-token-secret [secret]", "user's access token secret")
-  .action(verify);
-
-program
   .command("count")
   .description("counts the number of tweets")
   .option("-f, --file [path]", "path to back-up file")
@@ -95,6 +97,14 @@ program
   .command("select")
   .description("returns identifiers with matching criteria")
   .option("-f, --file [path]", "path to back-up file")
+  .option("--until [date]", "date until that identifiers will be returned")
   .action(select);
+
+program
+  .command("verify")
+  .description("verifies that everything's okay")
+  .option("-t, --access-token [token]", "user's access token")
+  .option("-s, --access-token-secret [secret]", "user's access token secret")
+  .action(verify);
 
 program.parse(process.argv);
