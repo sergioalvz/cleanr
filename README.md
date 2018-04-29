@@ -1,5 +1,7 @@
 # `cleanr`
 
+[![Build Status](https://travis-ci.org/sergioalvz/cleanr.svg?branch=master)](https://travis-ci.org/sergioalvz/cleanr)
+
 <!-- TOC -->
 
 * [`cleanr`](#cleanr)
