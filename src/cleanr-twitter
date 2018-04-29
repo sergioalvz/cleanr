@@ -27,49 +27,36 @@ function buildTwitter({
   });
 }
 
-async function count({ file }) {
-  function parse() {
-    return new Promise(resolve => {
-      let numberOfRecords = 0;
+function parse({ file, query: { until = moment.utc() } = {} }) {
+  return new Promise(resolve => {
+    let counter = 0;
+    const rows = [];
 
-      const parser = csv.parse({ delimiter: "," });
+    createReadStream(file)
+      .pipe(csv.parse({ delimiter: "," }))
+      .on("data", row => {
+        if (counter > 0) {
+          const timestamp = moment(row[3], "YYYY-MM-DD HH:mm:ss +0000");
 
-      createReadStream(file)
-        .pipe(parser)
-        .on("data", () => numberOfRecords++)
-        .on("end", () => resolve(numberOfRecords));
-    });
-  }
+          if (timestamp.isBefore(until)) {
+            rows.push(row);
+          }
+        }
 
-  const numberOfTweets = await parse();
-
-  console.log(numberOfTweets - 1);
+        counter++;
+      })
+      .on("end", () => resolve(rows));
+  });
 }
 
-async function select({ until = moment.utc(), file }) {
-  function parse() {
-    return new Promise(resolve => {
-      let counter = 0;
-      const rows = [];
+async function count({ file }) {
+  const rows = await parse({ file });
 
-      createReadStream(file)
-        .pipe(csv.parse({ delimiter: "," }))
-        .on("data", row => {
-          if (counter > 0) {
-            const timestamp = moment(row[3], "YYYY-MM-DD HH:mm:ss +0000");
+  console.log(rows.length);
+}
 
-            if (timestamp.isBefore(until)) {
-              rows.push(row);
-            }
-          }
-
-          counter++;
-        })
-        .on("end", () => resolve(rows));
-    });
-  }
-
-  const rows = await parse();
+async function select({ file, until }) {
+  const rows = await parse({ file, query: { until } });
   const identifiers = rows.map(row => row[0]).join("\n");
 
   console.log(identifiers);
