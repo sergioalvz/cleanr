@@ -6,11 +6,7 @@ module.exports = class Remove {
   }
 
   async perform({ listOfIds = [] }) {
-    for (let index = 0; index < listOfIds.length; index++) {
-      const id = listOfIds[index];
-
-      console.log(`Removing ${index + 1} of ${listOfIds.length}: ${id}`);
-
+    for (const id of listOfIds) {
       await this._twitter.removeTweet(id);
     }
   }
