@@ -11,8 +11,8 @@
   "author": "",
   "license": "Apache-2.0",
   "devDependencies": {
-    "eslint": "^6.0.0",
-    "jest": "^24.8.0"
+    "eslint": "^8.36.0",
+    "jest": "^29.5.0"
   },
   "private": true,
   "jest": {
@@ -28,10 +28,10 @@
     "testEnvironment": "node"
   },
   "dependencies": {
-    "commander": "^2.15.1",
-    "csv": "^3.0.2",
-    "dotenv": "^5.0.1",
+    "commander": "^10.0.0",
+    "csv": "^6.2.8",
+    "dotenv": "^16.0.3",
     "moment": "^2.22.1",
-    "twitter-lite": "^0.5.0"
+    "twitter-lite": "^1.1.0"
   }
 }

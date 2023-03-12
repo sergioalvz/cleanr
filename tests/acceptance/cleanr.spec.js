@@ -19,7 +19,7 @@ describe("cleanr", () => {
   it("works", async () => {
     expect.assertions(1);
 
-    const result = await exec();
+    const result = await exec("--help");
 
     expect(result).toBeDefined();
   });
@@ -95,7 +95,7 @@ describe("cleanr", () => {
           "980459529396727810",
           "979814031212064770",
           "979462972547457024",
-          "979372356769546240"
+          "979372356769546240",
         ].join("\n");
 
         expect(stdout.trim()).toEqual(expected);
@@ -115,7 +115,7 @@ describe("cleanr", () => {
         const expected = [
           "979814031212064770",
           "979462972547457024",
-          "979372356769546240"
+          "979372356769546240",
         ].join("\n");
 
         expect(stdout.trim()).toEqual(expected);
